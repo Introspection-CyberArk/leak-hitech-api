@@ -13,8 +13,8 @@ class handler(BaseHTTPRequestHandler):
         self.end_headers()
 
         try:
-            query = parse_qs(urlparse(self.path).query)
 
+            query = parse_qs(urlparse(self.path).query)
             number = query.get("number", [""])[0]
 
             if not number:
@@ -24,20 +24,27 @@ class handler(BaseHTTPRequestHandler):
                 }).encode())
                 return
 
-            api_url = (
-                "https://ukraine-xinfo-onrender-leak.42web.io/"
-                f"leak-api.php?key=TusharT&type=leakk&term={number}"
+            url = f"https://ukraine-xinfo-onrender-leak.42web.io/leak-api.php?key=TusharT&type=leakk&term={number}"
+
+            headers = {
+                "User-Agent": "Mozilla/5.0",
+                "Accept": "application/json,text/plain,*/*"
+            }
+
+            response = requests.get(
+                url,
+                headers=headers,
+                timeout=60
             )
 
-            response = requests.get(api_url, timeout=30)
+            text = response.text
 
-            # if API returns non-json
             try:
                 data = response.json()
             except:
                 data = {
-                    "status": False,
-                    "response": response.text
+                    "status": True,
+                    "raw_response": text
                 }
 
             self.wfile.write(json.dumps(data).encode())
